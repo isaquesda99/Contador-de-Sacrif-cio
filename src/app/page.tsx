@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -7,9 +8,10 @@ import { SummaryCard } from "@/components/study/SummaryCard";
 import { GoalProgressCard } from "@/components/study/GoalProgressCard";
 import { DailyHistory } from "@/components/study/DailyHistory";
 import { SettingsDialog } from "@/components/study/SettingsDialog";
+import { ManualEntryDialog } from "@/components/study/ManualEntryDialog";
 import { StudySession } from "@/types/study";
 import { isSameWeek, isSameMonth, getTodayStr } from "@/lib/study-utils";
-import { LayoutDashboard, TrendingUp, CalendarDays } from "lucide-react";
+import { LayoutDashboard, TrendingUp, CalendarDays, Plus } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function StudyTimeTracker() {
@@ -19,7 +21,6 @@ export default function StudyTimeTracker() {
   const [formattedDate, setFormattedDate] = useState("");
 
   useEffect(() => {
-    // Load from local storage on mount
     const savedSessions = localStorage.getItem("study_sessions");
     const savedGoal = localStorage.getItem("weekly_goal");
     
@@ -35,7 +36,6 @@ export default function StudyTimeTracker() {
       setWeeklyGoal(parseFloat(savedGoal));
     }
     
-    // Set current date safely after mount
     setFormattedDate(new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' }).format(new Date()));
     setMounted(true);
   }, []);
@@ -47,12 +47,16 @@ export default function StudyTimeTracker() {
     }
   }, [sessions, weeklyGoal, mounted]);
 
-  const handleSaveSession = (durationSeconds: number) => {
+  const handleSaveSession = (durationSeconds: number, customTimestamp?: number) => {
+    const timestamp = customTimestamp || Date.now();
+    const date = new Date(timestamp);
+    const dateStr = date.toISOString().split('T')[0];
+
     const newSession: StudySession = {
       id: Math.random().toString(36).substr(2, 9),
-      timestamp: Date.now(),
+      timestamp,
       durationSeconds,
-      dateStr: getTodayStr(),
+      dateStr,
     };
     setSessions((prev) => [newSession, ...prev]);
   };
@@ -61,8 +65,15 @@ export default function StudyTimeTracker() {
     setSessions((prev) => prev.filter((s) => s.id !== sessionId));
   };
 
-  const handleImportData = (importedSessions: StudySession[], importedGoal: number) => {
-    setSessions(importedSessions);
+  const handleImportData = (importedSessions: StudySession[], importedGoal: number, merge: boolean = false) => {
+    if (merge) {
+      // Create a map of existing IDs to avoid duplicates
+      const existingIds = new Set(sessions.map(s => s.id));
+      const uniqueNewSessions = importedSessions.filter(s => !existingIds.has(s.id));
+      setSessions((prev) => [...uniqueNewSessions, ...prev]);
+    } else {
+      setSessions(importedSessions);
+    }
     setWeeklyGoal(importedGoal);
   };
 
@@ -103,25 +114,25 @@ export default function StudyTimeTracker() {
                 {formattedDate}
               </span>
             </div>
-            <SettingsDialog 
-              sessions={sessions} 
-              weeklyGoal={weeklyGoal} 
-              onImport={handleImportData} 
-            />
+            <div className="flex gap-2">
+              <ManualEntryDialog onAdd={handleSaveSession} />
+              <SettingsDialog 
+                sessions={sessions} 
+                weeklyGoal={weeklyGoal} 
+                onImport={handleImportData} 
+              />
+            </div>
           </div>
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-0">
-          {/* Coluna do Timer */}
           <div className="lg:col-span-4 xl:col-span-3 h-full overflow-hidden">
             <div className="h-full max-h-[500px] lg:max-h-none">
-              <TimerDisplay onSave={handleSaveSession} />
+              <TimerDisplay onSave={(duration) => handleSaveSession(duration)} />
             </div>
           </div>
 
-          {/* Coluna Central e Direita */}
           <div className="lg:col-span-8 xl:col-span-9 flex flex-col gap-6 min-h-0">
-            {/* Grid de Resumo */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
               <SummaryCard 
                 title="Semana" 
@@ -142,7 +153,6 @@ export default function StudyTimeTracker() {
               />
             </div>
 
-            {/* Histórico */}
             <div className="flex-1 min-h-0">
               <DailyHistory sessions={sessions} onDelete={handleDeleteSession} />
             </div>
