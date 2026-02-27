@@ -85,25 +85,65 @@ export function TimerDisplay({ onSave }: TimerDisplayProps) {
 
   return (
     <Card className="w-full overflow-hidden border border-white/5 shadow-2xl bg-card h-full flex flex-col">
-      <CardHeader className="text-center pb-0">
+      <CardHeader className="text-center pb-2 shrink-0">
         <div className="flex justify-center mb-1">
           <div className="bg-primary/10 p-2 rounded-full">
-            <TimerIcon className="h-5 w-5 text-primary" />
+            <TimerIcon className="h-6 w-6 text-primary" />
           </div>
         </div>
-        <CardTitle className="text-base font-bold text-white uppercase tracking-wider">Cronômetro</CardTitle>
+        <CardTitle className="text-lg font-bold text-white uppercase tracking-wider">Cronômetro</CardTitle>
       </CardHeader>
       
-      <CardContent className="flex flex-col items-center gap-4 py-4 flex-1 justify-center overflow-y-auto">
+      <CardContent className="flex flex-col items-center gap-4 py-4 flex-1 justify-center overflow-hidden">
         {/* Cronômetro de Estudo */}
-        <div className="relative flex items-center justify-center scale-75 md:scale-90 transition-transform">
+        <div className="relative flex items-center justify-center transition-transform">
+          <svg className="w-64 h-64 transform -rotate-90">
+            <circle
+              cx="128"
+              cy="128"
+              r="120"
+              stroke="currentColor"
+              strokeWidth="8"
+              fill="transparent"
+              className="text-white/5"
+            />
+            <circle
+              cx="128"
+              cy="128"
+              r="120"
+              stroke="currentColor"
+              strokeWidth="8"
+              fill="transparent"
+              strokeDasharray={754}
+              strokeDashoffset={754 - (754 * studyProgress) / 100}
+              className={cn(
+                "text-primary transition-all duration-1000 ease-linear",
+                isActive && !isPaused ? "shadow-[0_0_25px_rgba(255,100,0,0.6)]" : "text-muted-foreground/30"
+              )}
+            />
+          </svg>
+          <div className="absolute flex flex-col items-center">
+            <span className="text-5xl font-mono font-black tracking-tighter text-white">
+              {formatTime(time)}
+            </span>
+            <span className="text-xs uppercase tracking-widest text-primary font-bold mt-1">
+              Foco Ativo
+            </span>
+          </div>
+        </div>
+
+        {/* Cronômetro de Pausa */}
+        <div className={cn(
+          "relative flex items-center justify-center transition-all duration-500",
+          (isActive && isPaused) ? "opacity-100 scale-105" : "opacity-30"
+        )}>
           <svg className="w-40 h-40 transform -rotate-90">
             <circle
               cx="80"
               cy="80"
               r="74"
               stroke="currentColor"
-              strokeWidth="5"
+              strokeWidth="6"
               fill="transparent"
               className="text-white/5"
             />
@@ -112,115 +152,70 @@ export function TimerDisplay({ onSave }: TimerDisplayProps) {
               cy="80"
               r="74"
               stroke="currentColor"
-              strokeWidth="5"
+              strokeWidth="6"
               fill="transparent"
               strokeDasharray={465}
-              strokeDashoffset={465 - (465 * studyProgress) / 100}
-              className={cn(
-                "text-primary transition-all duration-1000 ease-linear",
-                isActive && !isPaused ? "shadow-[0_0_15px_rgba(255,100,0,0.5)]" : "text-muted-foreground/30"
-              )}
-            />
-          </svg>
-          <div className="absolute flex flex-col items-center">
-            <span className="text-3xl font-mono font-black tracking-tighter text-white">
-              {formatTime(time)}
-            </span>
-            <span className="text-[9px] uppercase tracking-widest text-primary font-bold">
-              Foco Ativo
-            </span>
-          </div>
-        </div>
-
-        {/* Cronômetro de Pausa (Pomodoro) */}
-        <div className={cn(
-          "relative flex items-center justify-center scale-50 md:scale-75 transition-all duration-500",
-          (isActive && isPaused) ? "opacity-100" : "opacity-40"
-        )}>
-          <svg className="w-32 h-32 transform -rotate-90">
-            <circle
-              cx="64"
-              cy="64"
-              r="58"
-              stroke="currentColor"
-              strokeWidth="4"
-              fill="transparent"
-              className="text-white/5"
-            />
-            <circle
-              cx="64"
-              cy="64"
-              r="58"
-              stroke="currentColor"
-              strokeWidth="4"
-              fill="transparent"
-              strokeDasharray={364}
-              strokeDashoffset={364 - (364 * breakProgress) / 100}
+              strokeDashoffset={465 - (465 * breakProgress) / 100}
               className={cn(
                 "text-accent transition-all duration-1000 ease-linear",
-                isActive && isPaused ? "shadow-[0_0_10px_rgba(255,200,0,0.4)]" : "text-muted-foreground/20"
+                isActive && isPaused ? "shadow-[0_0_15px_rgba(255,200,0,0.5)]" : "text-muted-foreground/20"
               )}
             />
           </svg>
           <div className="absolute flex flex-col items-center">
-            <div className="flex items-center gap-1">
-              <Coffee className="h-3 w-3 text-accent" />
-              <span className="text-xl font-mono font-bold tracking-tighter text-accent">
+            <div className="flex items-center gap-2">
+              <Coffee className="h-4 w-4 text-accent" />
+              <span className="text-2xl font-mono font-bold tracking-tighter text-accent">
                 {formatTime(breakTime)}
               </span>
             </div>
-            <span className="text-[8px] uppercase tracking-widest text-muted-foreground font-bold">
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
               Tempo de Pausa
             </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 w-full max-w-[260px] mt-2">
+        <div className="grid grid-cols-2 gap-2 w-full max-w-[280px] mt-2 shrink-0">
           {!isActive || isPaused ? (
             <Button 
               onClick={handleStart} 
-              size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl h-10 shadow-lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-black rounded-lg h-10 shadow-lg text-xs uppercase tracking-tight"
             >
-              <Play className="h-4 w-4 mr-1" /> {isActive ? "Voltar" : "Iniciar"}
+              <Play className="h-4 w-4 mr-1.5" /> {isActive ? "Voltar" : "Iniciar"}
             </Button>
           ) : (
             <Button 
               onClick={handlePause} 
-              size="sm"
               variant="outline"
-              className="font-bold rounded-xl h-10 border-2 border-primary/50 text-white hover:bg-primary/10"
+              className="font-black rounded-lg h-10 border-2 border-primary/50 text-white hover:bg-primary/10 text-xs uppercase tracking-tight"
             >
-              <Pause className="h-4 w-4 mr-1" /> Pausar
+              <Pause className="h-4 w-4 mr-1.5" /> Pausar
             </Button>
           )}
 
           <Button 
             onClick={handleStop} 
-            size="sm"
             variant="ghost" 
             disabled={!isActive}
-            className="font-bold rounded-xl h-10 text-muted-foreground hover:text-white hover:bg-white/5"
+            className="font-black rounded-lg h-10 text-muted-foreground hover:text-white hover:bg-white/5 text-xs uppercase tracking-tight"
           >
-            <Square className="h-4 w-4 mr-1" /> Parar
+            <Square className="h-4 w-4 mr-1.5" /> Parar
           </Button>
           
           <Button 
             onClick={handleReset} 
-            size="sm"
             variant="outline"
-            className="font-bold rounded-xl h-10 border border-white/10 text-white hover:bg-white/5"
+            className="font-black rounded-lg h-10 border border-white/10 text-white hover:bg-white/5 text-xs uppercase tracking-tight"
           >
-            <RotateCcw className="h-4 w-4 mr-1" /> Reset
+            <RotateCcw className="h-4 w-4 mr-1.5" /> Reset
           </Button>
 
           <Button 
             onClick={handleSave} 
-            size="sm"
-            className="bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl h-10 border border-white/5"
+            className="bg-white/10 hover:bg-white/20 text-white font-black rounded-lg h-10 border border-white/5 text-xs uppercase tracking-tight"
             disabled={time === 0}
           >
-            <Save className="h-4 w-4 mr-1" /> Salvar
+            <Save className="h-4 w-4 mr-1.5" /> Salvar
           </Button>
         </div>
       </CardContent>
