@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,7 +8,7 @@ import { Play, Pause, RotateCcw, Square, Save, Timer as TimerIcon, Coffee } from
 import { cn } from "@/lib/utils";
 
 interface TimerDisplayProps {
-  onSave: (duration: number) => void;
+  onSave: (duration: number, breakDuration: number) => void;
 }
 
 export function TimerDisplay({ onSave }: TimerDisplayProps) {
@@ -76,7 +75,7 @@ export function TimerDisplay({ onSave }: TimerDisplayProps) {
 
   const handleSave = () => {
     if (time > 0) {
-      onSave(time);
+      onSave(time, breakTime);
       handleReset();
     }
   };
