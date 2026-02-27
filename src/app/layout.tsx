@@ -1,9 +1,10 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Forja de Estudo',
-  description: 'Molde seu conhecimento e forje sua disciplina.',
+  description: 'Molde seu conhecimento e forje sua disciplina na bigorna da dedicação.',
 };
 
 export default function RootLayout({
