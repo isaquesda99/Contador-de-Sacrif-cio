@@ -18,7 +18,7 @@ export function TimerDisplay({ onSave }: TimerDisplayProps) {
   const [isPaused, setIsPaused] = useState(true);
 
   useEffect(() => {
-    const defaultTitle = "Contador de Sacrifício";
+    const defaultTitle = "Forja de Estudo";
     if (isActive && !isPaused) {
       document.title = `🔥 ${formatTime(time)} - ${defaultTitle}`;
     } else if (isActive && isPaused && time > 0) {
