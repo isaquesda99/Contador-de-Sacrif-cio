@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -12,12 +13,15 @@ import { StudySession } from "@/types/study";
 import { isSameWeek, isSameMonth, isSameYear, getLocalDateStr, getTodayStr } from "@/lib/study-utils";
 import { LayoutDashboard, TrendingUp, CalendarDays, History, Flame } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 export default function StudyTimeTracker() {
   const [sessions, setSessions] = useState<StudySession[]>([]);
   const [weeklyGoal, setWeeklyGoal] = useState(20);
   const [mounted, setMounted] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
+
+  const logoImage = PlaceHolderImages.find(img => img.id === 'forge-logo');
 
   useEffect(() => {
     const savedSessions = localStorage.getItem("study_sessions");
@@ -48,15 +52,16 @@ export default function StudyTimeTracker() {
 
   const handleSaveSession = (durationSeconds: number, breakDurationSeconds: number = 0, customTimestamp?: number) => {
     const timestamp = customTimestamp !== undefined ? customTimestamp : Date.now();
+    const dateStr = getLocalDateStr(dateObj); // Usando a função corrigida
     const dateObj = new Date(timestamp);
-    const dateStr = getLocalDateStr(dateObj);
+    const finalDateStr = getLocalDateStr(dateObj);
 
     const newSession: StudySession = {
       id: Math.random().toString(36).substr(2, 9),
       timestamp,
       durationSeconds,
       breakDurationSeconds,
-      dateStr,
+      dateStr: finalDateStr,
     };
     setSessions((prev) => [newSession, ...prev]);
   };
@@ -102,24 +107,31 @@ export default function StudyTimeTracker() {
       <div className="max-w-[1600px] mx-auto p-4 md:p-6 h-full flex flex-col">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 shrink-0">
           <div className="flex items-center gap-4">
-            <div className="bg-card p-1 rounded-2xl shadow-xl border border-white/5 flex items-center justify-center overflow-hidden w-24 h-24 md:w-32 md:h-32">
-              <Image 
-                src="/icon.png" 
-                alt="Forja de Estudo Logo" 
-                width={112} 
-                height={112} 
-                className="object-contain"
-                priority
-              />
+            <div className="bg-card p-1 rounded-2xl shadow-2xl border border-white/5 flex items-center justify-center overflow-hidden w-24 h-24 md:w-28 md:h-28 relative">
+              {logoImage && (
+                <Image 
+                  src={logoImage.imageUrl} 
+                  alt={logoImage.description} 
+                  fill
+                  className="object-cover opacity-80"
+                  data-ai-hint={logoImage.imageHint}
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white">Forja de Estudo</h1>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white uppercase italic">
+                Forja <span className="text-primary">de</span> Estudo
+              </h1>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold">
+                Molde sua disciplina
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <div className="flex items-center gap-3 bg-card px-5 py-3 rounded-2xl shadow-md border border-white/10">
-              <CalendarDays className="h-5 w-5 text-primary" />
-              <span className="text-sm md:text-base font-bold uppercase tracking-tight text-white">
+            <div className="flex items-center gap-3 bg-card px-6 py-4 rounded-2xl shadow-md border border-white/10 min-w-[220px] justify-center">
+              <CalendarDays className="h-6 w-6 text-primary" />
+              <span className="text-sm md:text-base font-black uppercase tracking-tight text-white">
                 {formattedDate}
               </span>
             </div>
@@ -147,25 +159,25 @@ export default function StudyTimeTracker() {
                 title="Hoje" 
                 totalSeconds={dayTotal} 
                 icon={Flame} 
-                description="Esforço diário"
+                description="Calor do dia"
               />
               <SummaryCard 
                 title="Semana" 
                 totalSeconds={weekTotal} 
                 icon={TrendingUp} 
-                description="Esforço semanal"
+                description="Ritmo de forja"
               />
               <SummaryCard 
                 title="Mês" 
                 totalSeconds={monthTotal} 
                 icon={LayoutDashboard} 
-                description="Esforço mensal"
+                description="Produção mensal"
               />
               <SummaryCard 
                 title="Ano" 
                 totalSeconds={yearTotal} 
                 icon={History} 
-                description="Total do ano"
+                description="Total forjado"
               />
               <div className="col-span-2 md:col-span-1 xl:col-span-1">
                 <GoalProgressCard 
