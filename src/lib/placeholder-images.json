@@ -1,3 +1,11 @@
+
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "forge-logo",
+      "description": "Ícone de uma forja medieval ou ferreiro",
+      "imageUrl": "https://picsum.photos/seed/forge77/200/200",
+      "imageHint": "blacksmith forge"
+    }
+  ]
 }
