@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useRef } from "react";
@@ -11,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Settings, Download, Upload, AlertTriangle, CheckCircle2, ListPlus } from "lucide-react";
+import { Settings, Download, Upload, AlertTriangle, ListPlus } from "lucide-react";
 import { StudySession } from "@/types/study";
 import { toast } from "@/hooks/use-toast";
 
@@ -38,7 +37,7 @@ export function SettingsDialog({ sessions, weeklyGoal, onImport }: SettingsDialo
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `contador-sacrificio-backup-${new Date().toISOString().split('T')[0]}.json`;
+    link.download = `forja-de-estudo-backup-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -102,7 +101,7 @@ export function SettingsDialog({ sessions, weeklyGoal, onImport }: SettingsDialo
             Configurações e Backup
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Gerencie seus dados. Utilize a opção de mesclagem para evitar perda de dados entre dispositivos.
+            Gerencie seus dados da Forja. Utilize a opção de mesclagem para evitar perda de dados entre dispositivos.
           </DialogDescription>
         </DialogHeader>
 
@@ -151,7 +150,7 @@ export function SettingsDialog({ sessions, weeklyGoal, onImport }: SettingsDialo
             <AlertTriangle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div className="text-[10px] leading-relaxed text-muted-foreground">
               <strong className="text-primary uppercase block mb-1">Dica de Sincronização:</strong>
-              Use o botão <strong>Mesclar</strong> para unir os dados deste computador com o arquivo de backup, sem apagar o que já está aqui.
+              Use o botão <strong>Mesclar</strong> para unir os dados deste computador com o arquivo de backup, sem apagar o que já está aqui na Forja.
             </div>
           </div>
         </div>
