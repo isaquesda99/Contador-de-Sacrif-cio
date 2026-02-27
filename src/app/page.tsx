@@ -102,22 +102,22 @@ export default function StudyTimeTracker() {
     <div className="h-screen bg-background text-foreground overflow-hidden">
       <div className="max-w-[1600px] mx-auto p-4 md:p-6 h-full flex flex-col">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 shrink-0">
-          <div className="flex items-center gap-4">
-            <div className="bg-card p-1 rounded-2xl shadow-2xl border border-white/5 flex items-center justify-center overflow-hidden w-20 h-20 md:w-24 md:h-24 relative group">
+          <div className="flex items-center gap-4 md:gap-6">
+            <div className="bg-card p-1 rounded-2xl shadow-2xl border border-white/5 flex items-center justify-center overflow-hidden w-24 h-24 md:w-32 md:h-32 relative group">
               <Image 
                 src="/icon.png" 
                 alt="Ícone Forja de Estudo" 
                 fill
-                className="object-cover opacity-90 transition-opacity group-hover:opacity-100"
+                className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-110 group-hover:opacity-100"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent pointer-events-none" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white uppercase italic">
+              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white uppercase italic leading-none">
                 Forja <span className="text-primary">de</span> Estudo
               </h1>
-              <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold">
+              <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-muted-foreground font-bold mt-2">
                 Molde sua disciplina
               </p>
             </div>
