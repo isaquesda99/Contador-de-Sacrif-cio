@@ -2,6 +2,7 @@ export interface StudySession {
   id: string;
   timestamp: number;
   durationSeconds: number;
+  breakDurationSeconds: number;
   dateStr: string; // YYYY-MM-DD
 }
 
