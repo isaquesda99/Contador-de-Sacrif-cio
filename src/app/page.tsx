@@ -105,7 +105,7 @@ export default function StudyTimeTracker() {
             <div className="bg-card p-1 rounded-2xl shadow-xl border border-white/5 flex items-center justify-center overflow-hidden w-24 h-24 md:w-32 md:h-32">
               <Image 
                 src="/icon.png" 
-                alt="Logo" 
+                alt="Forja de Estudo Logo" 
                 width={112} 
                 height={112} 
                 className="object-contain"
@@ -113,7 +113,7 @@ export default function StudyTimeTracker() {
               />
             </div>
             <div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white">Contador de Sacrifício</h1>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white">Forja de Estudo</h1>
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
