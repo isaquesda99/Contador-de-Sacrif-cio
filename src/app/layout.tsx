@@ -2,8 +2,8 @@ import type {Metadata} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Contador de Sacrifício',
-  description: 'Acompanhe seu esforço e mantenha o foco.',
+  title: 'Forja de Estudo',
+  description: 'Molde seu conhecimento e forje sua disciplina.',
 };
 
 export default function RootLayout({
