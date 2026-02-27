@@ -1,11 +1,10 @@
-
 "use client";
 
 import { useState } from "react";
 import { StudySession } from "@/types/study";
 import { formatTimeSummary } from "@/lib/study-utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Clock, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Clock, Trash2, ChevronLeft, ChevronRight, Coffee } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
@@ -95,14 +94,25 @@ export function DailyHistory({ sessions, onDelete }: DailyHistoryProps) {
                       {format(new Date(session.timestamp), "HH:mm")}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="bg-primary/20 text-primary border border-primary/20 px-3 py-1 rounded-full text-[10px] font-black shadow-[0_0_10px_rgba(255,100,0,0.1)]">
-                      {formatTimeSummary(session.durationSeconds)}
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-primary/20 text-primary border border-primary/20 px-3 py-1 rounded-full text-[10px] font-black shadow-[0_0_10px_rgba(255,100,0,0.1)] flex items-center gap-1.5 min-w-[60px] justify-center">
+                        <Clock className="h-3 w-3" />
+                        {formatTimeSummary(session.durationSeconds)}
+                      </div>
+                      
+                      {session.breakDurationSeconds > 0 && (
+                        <div className="bg-accent/20 text-accent border border-accent/20 px-3 py-1 rounded-full text-[10px] font-black shadow-[0_0_10px_rgba(255,200,0,0.1)] flex items-center gap-1.5 min-w-[60px] justify-center">
+                          <Coffee className="h-3 w-3" />
+                          {formatTimeSummary(session.breakDurationSeconds)}
+                        </div>
+                      )}
                     </div>
+                    
                     <Button 
                       variant="ghost" 
                       size="icon" 
-                      className="h-8 w-8 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-all opacity-0 group-hover:opacity-100"
+                      className="h-8 w-8 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-all opacity-0 group-hover:opacity-100 ml-2"
                       onClick={() => onDelete(session.id)}
                     >
                       <Trash2 className="h-4 w-4" />
