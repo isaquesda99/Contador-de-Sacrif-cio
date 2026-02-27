@@ -153,7 +153,7 @@ export default function StudyTimeTracker() {
                 title="Hoje" 
                 totalSeconds={dayTotal} 
                 icon={Flame} 
-                description="Calor do dia"
+                description="Horas do dia"
               />
               <SummaryCard 
                 title="Semana" 
