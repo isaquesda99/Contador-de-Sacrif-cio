@@ -1,4 +1,4 @@
-import { isSameWeek as isSameWeekDf, isSameMonth as isSameMonthDf, format as formatDf } from 'date-fns';
+import { isSameWeek as isSameWeekDf, isSameMonth as isSameMonthDf, isSameYear as isSameYearDf, format as formatDf } from 'date-fns';
 
 export function formatTime(seconds: number): string {
   const hrs = Math.floor(seconds / 3600);
@@ -15,7 +15,17 @@ export function formatTimeSummary(seconds: number): string {
 }
 
 export function getTodayStr(): string {
-  return new Date().toISOString().split('T')[0];
+  return getLocalDateStr(new Date());
+}
+
+/**
+ * Retorna a data no formato YYYY-MM-DD respeitando o fuso horário local.
+ */
+export function getLocalDateStr(date: Date): string {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**
@@ -31,4 +41,11 @@ export function isSameWeek(date1: Date, date2: Date): boolean {
  */
 export function isSameMonth(date1: Date, date2: Date): boolean {
   return isSameMonthDf(date1, date2);
+}
+
+/**
+ * Verifica se duas datas pertencem ao mesmo ano.
+ */
+export function isSameYear(date1: Date, date2: Date): boolean {
+  return isSameYearDf(date1, date2);
 }
