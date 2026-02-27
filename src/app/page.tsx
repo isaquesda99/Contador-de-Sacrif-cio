@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,13 +9,13 @@ import { DailyHistory } from "@/components/study/DailyHistory";
 import { SettingsDialog } from "@/components/study/SettingsDialog";
 import { ManualEntryDialog } from "@/components/study/ManualEntryDialog";
 import { StudySession } from "@/types/study";
-import { isSameWeek, isSameMonth, getTodayStr } from "@/lib/study-utils";
-import { LayoutDashboard, TrendingUp, CalendarDays, Plus } from "lucide-react";
+import { isSameWeek, isSameMonth, isSameYear, getLocalDateStr, getTodayStr } from "@/lib/study-utils";
+import { LayoutDashboard, TrendingUp, CalendarDays, History, Flame } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function StudyTimeTracker() {
   const [sessions, setSessions] = useState<StudySession[]>([]);
-  const [weeklyGoal, setWeeklyGoal] = useState(20); // Default 20 hours
+  const [weeklyGoal, setWeeklyGoal] = useState(20);
   const [mounted, setMounted] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
 
@@ -48,9 +47,9 @@ export default function StudyTimeTracker() {
   }, [sessions, weeklyGoal, mounted]);
 
   const handleSaveSession = (durationSeconds: number, customTimestamp?: number) => {
-    const timestamp = customTimestamp || Date.now();
-    const date = new Date(timestamp);
-    const dateStr = date.toISOString().split('T')[0];
+    const timestamp = customTimestamp !== undefined ? customTimestamp : Date.now();
+    const dateObj = new Date(timestamp);
+    const dateStr = getLocalDateStr(dateObj);
 
     const newSession: StudySession = {
       id: Math.random().toString(36).substr(2, 9),
@@ -67,7 +66,6 @@ export default function StudyTimeTracker() {
 
   const handleImportData = (importedSessions: StudySession[], importedGoal: number, merge: boolean = false) => {
     if (merge) {
-      // Create a map of existing IDs to avoid duplicates
       const existingIds = new Set(sessions.map(s => s.id));
       const uniqueNewSessions = importedSessions.filter(s => !existingIds.has(s.id));
       setSessions((prev) => [...uniqueNewSessions, ...prev]);
@@ -78,6 +76,12 @@ export default function StudyTimeTracker() {
   };
 
   const now = new Date();
+  const todayStr = getTodayStr();
+
+  const dayTotal = sessions
+    .filter((s) => s.dateStr === todayStr)
+    .reduce((acc, s) => acc + s.durationSeconds, 0);
+
   const weekTotal = sessions
     .filter((s) => isSameWeek(new Date(s.timestamp), now))
     .reduce((acc, s) => acc + s.durationSeconds, 0);
@@ -86,14 +90,18 @@ export default function StudyTimeTracker() {
     .filter((s) => isSameMonth(new Date(s.timestamp), now))
     .reduce((acc, s) => acc + s.durationSeconds, 0);
 
+  const yearTotal = sessions
+    .filter((s) => isSameYear(new Date(s.timestamp), now))
+    .reduce((acc, s) => acc + s.durationSeconds, 0);
+
   if (!mounted) return null;
 
   return (
     <div className="h-screen bg-background text-foreground overflow-hidden">
-      <div className="max-w-[1400px] mx-auto p-4 md:p-6 h-full flex flex-col">
+      <div className="max-w-[1600px] mx-auto p-4 md:p-6 h-full flex flex-col">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 shrink-0">
           <div className="flex items-center gap-4">
-            <div className="bg-primary/5 p-2 rounded-2xl shadow-xl border border-primary/10 flex items-center justify-center overflow-hidden w-24 h-24 md:w-32 md:h-32">
+            <div className="bg-card p-1 rounded-2xl shadow-xl border border-white/5 flex items-center justify-center overflow-hidden w-24 h-24 md:w-32 md:h-32">
               <Image 
                 src="/icon.png" 
                 alt="Logo" 
@@ -133,7 +141,13 @@ export default function StudyTimeTracker() {
           </div>
 
           <div className="lg:col-span-8 xl:col-span-9 flex flex-col gap-6 min-h-0">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 shrink-0">
+              <SummaryCard 
+                title="Hoje" 
+                totalSeconds={dayTotal} 
+                icon={Flame} 
+                description="Esforço diário"
+              />
               <SummaryCard 
                 title="Semana" 
                 totalSeconds={weekTotal} 
@@ -146,11 +160,19 @@ export default function StudyTimeTracker() {
                 icon={LayoutDashboard} 
                 description="Esforço mensal"
               />
-              <GoalProgressCard 
-                currentSeconds={weekTotal} 
-                goalHours={weeklyGoal} 
-                onGoalChange={(newGoal) => setWeeklyGoal(newGoal)}
+              <SummaryCard 
+                title="Ano" 
+                totalSeconds={yearTotal} 
+                icon={History} 
+                description="Total do ano"
               />
+              <div className="col-span-2 md:col-span-1 xl:col-span-1">
+                <GoalProgressCard 
+                  currentSeconds={weekTotal} 
+                  goalHours={weeklyGoal} 
+                  onGoalChange={(newGoal) => setWeeklyGoal(newGoal)}
+                />
+              </div>
             </div>
 
             <div className="flex-1 min-h-0">
