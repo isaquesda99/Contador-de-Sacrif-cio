@@ -13,15 +13,12 @@ import { StudySession } from "@/types/study";
 import { isSameWeek, isSameMonth, isSameYear, getLocalDateStr, getTodayStr } from "@/lib/study-utils";
 import { LayoutDashboard, TrendingUp, CalendarDays, History, Flame } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 export default function StudyTimeTracker() {
   const [sessions, setSessions] = useState<StudySession[]>([]);
   const [weeklyGoal, setWeeklyGoal] = useState(20);
   const [mounted, setMounted] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
-
-  const logoImage = PlaceHolderImages.find(img => img.id === 'forge-logo');
 
   useEffect(() => {
     const savedSessions = localStorage.getItem("study_sessions");
@@ -52,7 +49,6 @@ export default function StudyTimeTracker() {
 
   const handleSaveSession = (durationSeconds: number, breakDurationSeconds: number = 0, customTimestamp?: number) => {
     const timestamp = customTimestamp !== undefined ? customTimestamp : Date.now();
-    const dateStr = getLocalDateStr(dateObj); // Usando a função corrigida
     const dateObj = new Date(timestamp);
     const finalDateStr = getLocalDateStr(dateObj);
 
@@ -107,17 +103,15 @@ export default function StudyTimeTracker() {
       <div className="max-w-[1600px] mx-auto p-4 md:p-6 h-full flex flex-col">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 shrink-0">
           <div className="flex items-center gap-4">
-            <div className="bg-card p-1 rounded-2xl shadow-2xl border border-white/5 flex items-center justify-center overflow-hidden w-24 h-24 md:w-28 md:h-28 relative">
-              {logoImage && (
-                <Image 
-                  src={logoImage.imageUrl} 
-                  alt={logoImage.description} 
-                  fill
-                  className="object-cover opacity-80"
-                  data-ai-hint={logoImage.imageHint}
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+            <div className="bg-card p-1 rounded-2xl shadow-2xl border border-white/5 flex items-center justify-center overflow-hidden w-20 h-20 md:w-24 md:h-24 relative group">
+              <Image 
+                src="/icon.png" 
+                alt="Ícone Forja de Estudo" 
+                fill
+                className="object-cover opacity-90 transition-opacity group-hover:opacity-100"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
             </div>
             <div>
               <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white uppercase italic">
